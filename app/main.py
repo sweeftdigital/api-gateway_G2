@@ -1,10 +1,9 @@
 import logging.config
-
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from dotenv import load_dotenv
-import httpx
 
+import httpx
+from dotenv import load_dotenv
+from fastapi import FastAPI
 
 load_dotenv()
 
@@ -21,6 +20,7 @@ async def healthcheck(app: FastAPI):
     print("APP STARTING")
     yield
     print("APP STOPPING")
+
 
 app = FastAPI(lifespan=healthcheck)
 

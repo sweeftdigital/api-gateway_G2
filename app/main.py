@@ -3,19 +3,26 @@ import logging.config
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from dotenv import load_dotenv
+import httpx
 
 
 load_dotenv()
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def healthcheck(app: FastAPI):
+    request_client = httpx.AsyncClient()
+    headers = {"Host": "localhost"}
+    response = await request_client.get(
+        "http://accounts:8000/accounts/api/healthcheck/",
+        headers=headers,
+    )
+    print(response.status_code)
     print("APP STARTING")
     yield
     print("APP STOPPING")
 
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=healthcheck)
 
 logger = logging.getLogger("app")
 

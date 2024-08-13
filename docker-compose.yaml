@@ -12,7 +12,11 @@ services:
     entrypoint: ""
     command: /api-gateway/scripts/healthcheck-entrypoint.sh
     restart: always
+
+    # Added volumes to mount local directories into the container
     volumes:
+      - ./app:/api-gateway/app  # Mounts the app directory so changes are reflected without rebuilding
+      - ./tests:/api-gateway/tests  # Mounts the tests directory for the same reason
       - ./htmlcov:/api-gateway/htmlcov  # Bind-mount the htmlcov directory
 
 networks:

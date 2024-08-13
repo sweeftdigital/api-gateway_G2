@@ -26,7 +26,7 @@ PROTOCOL = "http"
 # Infinite loop
 while True:
     try:
-        response = requests.get(f"{PROTOCOL}://{SERVICE_NAME}:{PORT}/")
+        response = requests.get(f"{PROTOCOL}://{SERVICE_NAME}:{PORT}")
         logger.info(
             "Port is open! Bye! Service:{} Ip:{} Port:{}".format(SERVICE_NAME, IP, PORT)
         )

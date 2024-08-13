@@ -12,6 +12,8 @@ services:
     entrypoint: ""
     command: /api-gateway/scripts/healthcheck-entrypoint.sh
     restart: always
+    volumes:
+      - ./htmlcov:/api-gateway/htmlcov  # Bind-mount the htmlcov directory
 
 networks:
   micro-network:

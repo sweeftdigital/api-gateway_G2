@@ -10,6 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY app/ app/
 COPY scripts/ scripts/
+COPY tests/ tests/
 
 RUN chmod +x /api-gateway/scripts/healthcheck-entrypoint.sh
 

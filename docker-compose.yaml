@@ -1,5 +1,6 @@
 services:
   api-gateway:
+    container_name: fastapi_gateway
     build:
       context: .
     ports:
@@ -8,6 +9,9 @@ services:
       - .env
     networks:
       - micro-network
+    entrypoint: ""
+    command: /api-gateway/scripts/healthcheck-entrypoint.sh
+    restart: always
 
 networks:
   micro-network:

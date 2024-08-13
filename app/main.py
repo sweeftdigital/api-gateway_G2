@@ -25,9 +25,3 @@ async def healthcheck(app: FastAPI):
 app = FastAPI(lifespan=healthcheck)
 
 logger = logging.getLogger("app")
-
-
-@app.get("/")
-async def root():
-    logger.debug("Hello World")
-    return {"Hello": "World"}

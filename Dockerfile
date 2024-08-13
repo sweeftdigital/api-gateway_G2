@@ -6,9 +6,13 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /api-gateway
 
 COPY requirements.txt .
-
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY app/ app/
+COPY scripts/ scripts/
 
-EXPOSE 8000
+RUN chmod +x /api-gateway/scripts/healthcheck-entrypoint.sh
+
+EXPOSE 8080
+
+ENTRYPOINT ["/api-gateway/scripts/healthcheck-entrypoint.sh"]

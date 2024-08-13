@@ -1,3 +1,5 @@
+import os
+
 import httpx
 from fastapi import APIRouter, HTTPException, status
 
@@ -5,13 +7,18 @@ from app.schemas.accounts_schemas import TokenRefresh, UserLogin
 
 router = APIRouter()
 
+BASE_URL = (
+    f"http://{os.getenv('ACCOUNTS_API_HOST')}:"
+    f"{os.getenv('ACCOUNT_SERVICE_PORT')}/accounts/api"
+)
+
 
 @router.post("/login")
 async def login(request: UserLogin):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://accounts:8000/accounts/api/token/", json=request.model_dump()
+                f"{BASE_URL}/token/", json=request.model_dump()
             )
             response.raise_for_status()
             return response.json()
@@ -32,7 +39,7 @@ async def refresh_token(request: TokenRefresh):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://accounts:8000/accounts/api/token/refresh/",
+                f"{BASE_URL}/token/refresh/",
                 json=request.model_dump(),
             )
             response.raise_for_status()

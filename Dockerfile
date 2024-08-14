@@ -8,9 +8,8 @@ WORKDIR /api-gateway
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY app/ app/
+# Only the scripts directory is copied here since app and tests will be mounted as volumes
 COPY scripts/ scripts/
-
 RUN chmod +x /api-gateway/scripts/healthcheck-entrypoint.sh
 
 EXPOSE 8080

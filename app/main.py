@@ -55,7 +55,7 @@ app = FastAPI(lifespan=get_service_schema)
 
 
 @app.route(  # noqa
-    path="/api/v1/{service}/{path:path}",
+    path="/{service}/{path:path}",
     methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
 )
 async def route_to_microservice(request: Request):

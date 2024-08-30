@@ -27,7 +27,7 @@ async def get_service_schema(app: FastAPI):
 
     async with httpx.AsyncClient() as client:
         for service, url in MICROSERVICES.items():
-            response = await client.request(method="GET", url=f"http://{url}/schema/")
+            response = await client.request(method="GET", url=f"https://{url}/schema/")
             yaml_content = response.content.decode("utf-8")
 
             json_data = yaml.safe_load(yaml_content)

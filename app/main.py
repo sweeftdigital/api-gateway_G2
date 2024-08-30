@@ -85,6 +85,7 @@ async def route_to_microservice(request: Request):
         raise HTTPException(status_code=404, detail="Service not found")
 
     service_url = f"https://{MICROSERVICES.get(service)}/{path}"
+    print(service_url)
     response = await forward_request(request, service_url)
 
     content_type = response.headers.get("content-type")

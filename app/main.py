@@ -5,7 +5,6 @@ import httpx
 import yaml
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
 from starlette.requests import Request
@@ -28,7 +27,7 @@ async def get_service_schema(app: FastAPI):
 
     async with httpx.AsyncClient() as client:
         for service, url in MICROSERVICES.items():
-            response = await client.request(method="GET", url=f"https://{url}/schema/")
+            response = await client.request(method="GET", url=f"http://{url}/schema/")
             yaml_content = response.content.decode("utf-8")
 
             json_data = yaml.safe_load(yaml_content)
@@ -55,26 +54,8 @@ async def get_service_schema(app: FastAPI):
 app = FastAPI(lifespan=get_service_schema)
 
 
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:8080",
-]
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 @app.route(  # noqa
-    path="/api/v1/{service}/{path:path}",
+    path="/{service}/{path:path}",
     methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
 )
 async def route_to_microservice(request: Request):
@@ -85,7 +66,6 @@ async def route_to_microservice(request: Request):
         raise HTTPException(status_code=404, detail="Service not found")
 
     service_url = f"https://{MICROSERVICES.get(service)}/{path}"
-    print(service_url)
     response = await forward_request(request, service_url)
 
     content_type = response.headers.get("content-type")

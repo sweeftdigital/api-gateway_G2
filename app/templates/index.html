@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts Microservice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            text-align: center;
+            overflow: hidden;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        .navbar .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #009485;
+        }
+        .navbar .swagger-btn, .admin-btn {
+            background-color: #009485;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .admin-btn {
+            background-color: black;
+            color: white;
+        }
+        .navbar .swagger-btn:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .admin-btn:hover {
+            background-color: #d0cfcf;
+            color: black;
+        }
+
+        .footer {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 90%;
+            text-align: center;
+            color: #6c757d;
+            padding: 10px;
+            border-top: 1px solid #e3e2e2;
+        }
+
+        .container {
+            height: 370px;
+            width: 370px;
+            position: absolute;
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 30%;
+        }
+
+        .moon {
+            background-color: #009485;
+            height: 170px;
+            width: 170px;
+            border-radius: 50%;
+            position: absolute;
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        .crater {
+            background-color: #048678;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .crater:before {
+            content: "";
+            position: absolute;
+            height: 25px;
+            width: 25px;
+            border-radius: 50%;
+            box-shadow: -5px 0 0 2px rgb(0, 126, 113);
+            top: 2px;
+            left: 7px;
+        }
+
+        .crater-1 { top: 27px; left: 90px; transform: scale(0.9); }
+        .crater-2 { bottom: 15px; left: 61px; transform: scale(0.6); }
+        .crater-3 { left: 15px; transform: scale(0.75); }
+        .crater-4 { left: 107px; top: 32px; transform: scale(1.18); }
+        .crater-5 { left: 33px; bottom: 4px; transform: scale(0.65); }
+
+        .shadow {
+            height: 190px;
+            width: 190px;
+            box-shadow: 21px 0 0 5px rgba(0,0,0,0.15);
+            border-radius: 50%;
+            position: relative;
+            bottom: 157.5px;
+            right: 46px;
+        }
+
+        .eye {
+            height: 12px;
+            width: 12px;
+            background-color: #161616;
+            position: relative;
+            border-radius: 50%;
+        }
+
+        .eye-l { bottom: 255px; left: 59px; }
+        .eye-r { bottom: 267px; left: 101px; }
+
+        .mouth {
+            height: 5px;
+            width: 10px;
+            border: 3px solid #161616;
+            position: relative;
+            bottom: 262px;
+            left: 79px;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .blush {
+            height: 7.5px;
+            width: 7.5px;
+            background-color: #53feed;
+            position: relative;
+            border-radius: 50%;
+        }
+
+        .blush-1 { bottom: 273px; left: 50px; }
+        .blush-2 { bottom: 281px; left: 115px; }
+
+        .orbit {
+            height: 280px;
+            width: 280px;
+            border-radius: 50%;
+            position: absolute;
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            animation: spin 5s infinite linear;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .rocket {
+            background-color: #fafcf7;
+            height: 50px;
+            width: 25px;
+            border-radius: 50% 50% 0 0;
+            position: relative;
+            left: -11px;
+            top: 115px;
+            border: 1px solid black;
+        }
+
+        .rocket:before {
+            position: absolute;
+            content: "";
+            background-color: #009485;
+            border: 1px solid black;
+            height: 20px;
+            width: 55px;
+            z-index: -1;
+            border-radius: 50% 50% 0 0;
+            right: -15px;
+            bottom: 0;
+        }
+
+        .rocket:after {
+            position: absolute;
+            content: "";
+            background-color: #009485;
+            border: 1px solid black;
+            height: 4px;
+            width: 15px;
+            border-radius: 0 0 2px 2px;
+            bottom: -4px;
+            left: 4.3px;
+        }
+
+        .window {
+            height: 10px;
+            width: 10px;
+            background-color: black;
+            border: 2px solid #95d6cf;
+            border-radius: 50%;
+            position: relative;
+            top: 17px;
+            left: 5px;
+        }
+
+        .helper-text {
+            font-size: 1em;
+            color: black;
+            margin-top: 10px;
+            text-align: center;
+            position: absolute;
+            left: 50%;
+            bottom: 20%;
+            transform: translateX(-50%); /* Center horizontally */
+            width: 70%;
+            @media (min-width: 600px) {
+                font-size: 1.2rem;
+                bottom: 30%;
+            }
+
+            @media (min-width: 900px) {
+                font-size: 1.5rem;
+                bottom: 30%;
+            }
+        }
+
+        .nav-links{
+            display: flex;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">API Gateway</div>
+        <div class="nav-links">
+            <a href="{{ swagger_url }}" class="swagger-btn">Swagger UI</a>
+        </div>
+    </div>
+    <div class="animation-container">
+        <div class="container">
+            <div class="moon">
+                <div class="crater crater-1"></div>
+                <div class="crater crater-2"></div>
+                <div class="crater crater-3"></div>
+                <div class="crater crater-4"></div>
+                <div class="crater crater-5"></div>
+                <div class="shadow"></div>
+                <div class="eye eye-l"></div>
+                <div class="eye eye-r"></div>
+                <div class="mouth"></div>
+                <div class="blush blush-1"></div>
+                <div class="blush blush-2"></div>
+            </div>
+            <div class="orbit">
+                <div class="rocket">
+                    <div class="window"></div>
+                </div>
+            </div>
+        </div>
+            <div class="helper-text">
+                Our API Gateway streamlines communication by connecting multiple microservices through a single entry point, ensuring efficient request routing and enhanced security.
+            </div>
+        </div>
+    <div class="footer">
+        <p>&copy; 2024 Reversello API Gateway. All rights reserved.</p>
+    </div>
+</body>
+</html>

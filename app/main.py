@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
@@ -52,6 +53,7 @@ async def get_service_schema(app: FastAPI):
 
 
 app = FastAPI(lifespan=get_service_schema)
+templates = Jinja2Templates(directory="app/templates")
 
 
 @app.route(  # noqa
@@ -74,4 +76,11 @@ async def route_to_microservice(request: Request):
 
     return JSONResponse(
         content=json.loads(response.content), status_code=response.status_code
+    )
+
+
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+async def root(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="index.html", context={"swagger_url": "/docs"}
     )

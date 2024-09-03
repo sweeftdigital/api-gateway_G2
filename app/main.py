@@ -27,7 +27,7 @@ async def get_service_schema(app: FastAPI):
 
     async with httpx.AsyncClient() as client:
         for service, url in MICROSERVICES.items():
-            response = await client.request(method="GET", url=f"http://{url}/schema/")
+            response = await client.request(method="GET", url=f"https://{url}/schema/")
             yaml_content = response.content.decode("utf-8")
 
             json_data = yaml.safe_load(yaml_content)
@@ -65,7 +65,7 @@ async def route_to_microservice(request: Request):
     if service not in MICROSERVICES:
         raise HTTPException(status_code=404, detail="Service not found")
 
-    service_url = f"http://{MICROSERVICES.get(service)}/{path}"
+    service_url = f"https://{MICROSERVICES.get(service)}/{path}"
     response = await forward_request(request, service_url)
 
     content_type = response.headers.get("content-type")

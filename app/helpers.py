@@ -21,5 +21,6 @@ async def forward_request(request: Request, url: str):
             url=url,
             headers=request.headers,
             data=await request.body(),
+            params=request.query_params,
         )
     return response

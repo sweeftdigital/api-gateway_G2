@@ -5,6 +5,7 @@ import httpx
 import yaml
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -54,6 +55,19 @@ async def get_service_schema(app: FastAPI):
 
 app = FastAPI(lifespan=get_service_schema)
 templates = Jinja2Templates(directory="app/templates")
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8080",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.route(  # noqa

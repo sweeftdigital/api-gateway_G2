@@ -59,11 +59,11 @@ app = FastAPI(lifespan=get_service_schema)
     methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
 )
 async def route_to_microservice(request: Request):
-    service = "accounts"
+    service = "bla"
     path = request.path_params.get("path")
 
     if service not in MICROSERVICES:
-        raise HTTPException(status_code=404, detail=f"Service not found 1.{MICROSERVICES}, 2.{service}")
+        raise HTTPException(status_code=404, detail=f"Service not found 1.{MICROSERVICES}, 2.{service}, 3.{path}")
 
     service_url = f"https://{MICROSERVICES.get(service)}/{path}"
     response = await forward_request(request, service_url)

@@ -60,7 +60,7 @@ app = FastAPI(lifespan=get_service_schema)
 )
 async def route_to_microservice(request: Request):
     service = "accounts"
-    path = f"accounts/{request.path_params.get("service")}/{request.path_params.get("path")}"
+    path = f"accounts/api/v1/signup/"
 
     if service not in MICROSERVICES:
         raise HTTPException(status_code=404, detail=f"Service not found 1.{MICROSERVICES}, 2.{service}, 3.{path}")

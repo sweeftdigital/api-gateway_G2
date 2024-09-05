@@ -1,5 +1,5 @@
 import os
 
 MICROSERVICES = {
-    "accounts": f"{os.getenv('ACCOUNTS_API_HOST')}:{os.getenv('ACCOUNTS_API_PORT')}",
+    "accounts": f"{os.getenv('ACCOUNT_SERVICE_HOST')}:{os.getenv('ACCOUNT_SERVICE_PORT')}",
 }

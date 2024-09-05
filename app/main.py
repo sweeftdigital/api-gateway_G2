@@ -59,7 +59,7 @@ app = FastAPI(lifespan=get_service_schema)
     methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
 )
 async def route_to_microservice(request: Request):
-    service = request.path_params.get("service")
+    service = "accounts"
     path = request.path_params.get("path")
 
     if service not in MICROSERVICES:

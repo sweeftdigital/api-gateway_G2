@@ -16,10 +16,12 @@ def fill_paths(paths: dict, service: str) -> dict:
 
 async def forward_request(request: Request, url: str):
     async with httpx.AsyncClient() as client:
+        headers = dict(request.headers)
+        headers.pop("origin")
         response = await client.request(
             method=request.method,
             url=url,
-            headers=request.headers,
+            headers=headers,
             data=await request.body(),
             params=request.query_params,
         )

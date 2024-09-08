@@ -1,4 +1,5 @@
-import httpx
+from urllib.parse import urlparse
+
 from starlette.requests import Request
 
 
@@ -16,13 +17,12 @@ def fill_paths(paths: dict, service: str) -> dict:
 
 async def forward_request(request: Request, url: str):
     headers = dict(request.headers)
-    headers.pop("origin", None)
-    async with httpx.AsyncClient() as client:
-        response = await client.request(
-            method=request.method,
-            url=url,
-            headers=headers,
-            data=await request.body(),
-            params=request.query_params,
-        )
+    headers["host"] = urlparse(url).hostname
+    response = await request.state.aclient.request(
+        method=request.method,
+        url=url,
+        headers=headers,
+        data=await request.body(),
+        params=request.query_params,
+    )
     return response

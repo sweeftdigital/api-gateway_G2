@@ -24,53 +24,54 @@ async def get_service_schema(app: FastAPI):
         summary="Exposed API for all microservices",
         routes=app.routes,
     )
+    request_client = httpx.AsyncClient()
 
-    async with httpx.AsyncClient() as client:
-        for service, url in MICROSERVICES.items():
-            response = await client.request(method="GET", url=f"https://{url}/schema/")
-            yaml_content = response.content.decode("utf-8")
+    for service, url in MICROSERVICES.items():
+        response = await request_client.get(url=f"https://{url}/schema/")
+        yaml_content = response.content.decode("utf-8")
 
-            json_data = yaml.safe_load(yaml_content)
-            schemas = json_data.get("components").get("schemas")
-            security = json_data.get("components").get("securitySchemes")
+        json_data = yaml.safe_load(yaml_content)
+        schemas = json_data.get("components").get("schemas")
+        security = json_data.get("components").get("securitySchemes")
 
-            paths = json_data.get("paths")
-            paths = fill_paths(paths, service)
+        paths = json_data.get("paths")
+        paths = fill_paths(paths, service)
 
-            app.openapi_schema["paths"].update(paths)
-            if not app.openapi_schema.get("components"):
-                app.openapi_schema["components"] = {}
-                app.openapi_schema["components"]["schemas"] = {}
+        app.openapi_schema["paths"].update(paths)
+        if not app.openapi_schema.get("components"):
+            app.openapi_schema["components"] = {}
+            app.openapi_schema["components"]["schemas"] = {}
 
-            if json_data.get("components").get("securitySchemes"):
-                app.openapi_schema["components"]["securitySchemes"] = {}
-                app.openapi_schema["components"]["securitySchemes"].update(security)
+        if json_data.get("components").get("securitySchemes"):
+            app.openapi_schema["components"]["securitySchemes"] = {}
+            app.openapi_schema["components"]["securitySchemes"].update(security)
 
-            app.openapi_schema["components"]["schemas"].update(schemas)
+        app.openapi_schema["components"]["schemas"].update(schemas)
 
-    yield
+    yield {"aclient": request_client}
 
 
 app = FastAPI(lifespan=get_service_schema)
 
-@app.route(  
+
+@app.route(
     path="/{service}/{path:path}",
     methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
 )
 async def route_to_microservice(request: Request):
     service = request.path_params.get("service")
     path = request.path_params.get("path")
-    
+
     if service not in MICROSERVICES:
         raise HTTPException(status_code=404, detail="Service not found")
-        
+
     service_url = f"https://{MICROSERVICES.get(service)}/{path}"
     response = await forward_request(request, service_url)
-    
+
     content_type = response.headers.get("content-type")
     if "text/html" in content_type:
         return HTMLResponse(content=response.content, status_code=response.status_code)
-        
+
     return JSONResponse(
         content=json.loads(response.content), status_code=response.status_code
     )

@@ -57,8 +57,8 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:8080",
-    "https://front-g2-dev-ud32gcxh6a-uc.a.run.app",
-    "https://front-g2-dev-ud32gcxh6a-uc.a.run.app/",
+    "https://rev-front-dev-g2-424868328181.europe-west3.run.app"
+    "https://rev-front-dev-g2-424868328181.europe-west3.run.app/",
 ]
 app.add_middleware(
     CORSMiddleware,

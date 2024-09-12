@@ -55,6 +55,9 @@ async def get_service_schema(app: FastAPI):
 app = FastAPI(lifespan=get_service_schema)
 origins = [
     "https://rev-front-dev-g2-424868328181.europe-west3.run.app/",
+    "https://reverse-auction-front-g2-424868328181.europe-west3.run.app/",
+    "https://rev-front-dev-g2-424868328181.europe-west3.run.app",
+    "https://reverse-auction-front-g2-424868328181.europe-west3.run.app",
 ]
 app.add_middleware(
     CORSMiddleware,

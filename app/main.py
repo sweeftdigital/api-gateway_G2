@@ -9,7 +9,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
 
 from .config import MICROSERVICES
 from .helpers import fill_paths, forward_request
@@ -84,8 +84,13 @@ async def route_to_microservice(request: Request):
     response = await forward_request(request, service_url)
 
     content_type = response.headers.get("content-type")
-    if "text/html" in content_type:
+    status_code = response.status_code
+
+    if content_type and "text/html" in content_type:
         return HTMLResponse(content=response.content, status_code=response.status_code)
+
+    if status_code == 204 or not response.content:
+        return Response(status_code=status_code)
 
     return JSONResponse(
         content=json.loads(response.content), status_code=response.status_code

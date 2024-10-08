@@ -60,8 +60,8 @@ origins = [
     "https://rev-front-dev-g2-424868328181.europe-west3.run.app",
     "https://reverse-auction-front-g2-424868328181.europe-west3.run.app",
     "https://admin-g2-424868328181.europe-west3.run.app/",
-    "https://admin-g2-424868328181.europe-west3.run.app",
     "https://admin-g2-dev-424868328181.europe-west3.run.app/",
+    "https://admin-g2-424868328181.europe-west3.run.app",
     "https://admin-g2-dev-424868328181.europe-west3.run.app",
 ]
 app.add_middleware(

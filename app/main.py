@@ -54,6 +54,7 @@ async def get_service_schema(app: FastAPI):
 
 app = FastAPI(lifespan=get_service_schema)
 origins = [
+    "*",
     "http://localhost:3000",
     "https://rev-front-dev-g2-424868328181.europe-west3.run.app/",
     "https://reverse-auction-front-g2-424868328181.europe-west3.run.app/",

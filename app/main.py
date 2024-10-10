@@ -119,7 +119,7 @@ async def websocket_route_to_microservice(
     extra_headers = {
         k: v
         for k, v in headers.items()
-        if k.lower() in ["authorization", "cookie", "x-api-key"]
+        if k.lower() in ["authorization", "cookie", "x-api-key", "accept-language"]
     }
 
     await websocket.accept()

@@ -1,7 +1,9 @@
+import asyncio
 import json
 from contextlib import asynccontextmanager
 
 import httpx
+import websockets
 import yaml
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -10,6 +12,7 @@ from fastapi.responses import HTMLResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
+from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from .config import MICROSERVICES
 from .helpers import fill_paths, forward_request
@@ -100,3 +103,60 @@ async def route_to_microservice(request: Request):
     return JSONResponse(
         content=json.loads(response.content), status_code=response.status_code
     )
+
+
+@app.websocket("/{service}/{path:path}")
+async def websocket_route_to_microservice(
+    websocket: WebSocket, service: str, path: str
+):
+    if service not in MICROSERVICES:
+        await websocket.close(code=1003)  # Invalid service
+        return
+
+    service_url = f"ws://{MICROSERVICES.get(service)}/{path}"
+    if websocket.query_params:
+        service_url += f"?{websocket.query_params}"
+
+    # Extract headers from the client connection
+    headers = dict(websocket.headers)
+
+    # Create extra_headers for the microservice connection
+    extra_headers = {
+        k: v
+        for k, v in headers.items()
+        if k.lower() in ["authorization", "cookie", "x-api-key", "accept-language"]
+    }
+
+    await websocket.accept()
+
+    try:
+        async with websockets.connect(
+            service_url,
+            extra_headers=extra_headers,
+        ) as microservice_ws:
+
+            async def forward_to_service():
+                try:
+                    async for message in websocket.iter_text():
+                        await microservice_ws.send(message)
+                except WebSocketDisconnect:
+                    pass
+
+            async def forward_to_client():
+                try:
+                    async for message in microservice_ws:
+                        await websocket.send_text(message)
+                except websockets.ConnectionClosed:
+                    pass
+
+            await asyncio.gather(
+                forward_to_service(),
+                forward_to_client(),
+            )
+
+    except websockets.exceptions.WebSocketException as e:
+        print(f"WebSocket error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+    finally:
+        await websocket.close()

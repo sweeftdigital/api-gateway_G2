@@ -113,7 +113,7 @@ async def websocket_route_to_microservice(
         await websocket.close(code=1003)  # Invalid service
         return
 
-    service_url = f"ws://{MICROSERVICES.get(service)}/{path}"
+    service_url = f"wss://{MICROSERVICES.get(service)}/{path}"
     if websocket.query_params:
         service_url += f"?{websocket.query_params}"
 

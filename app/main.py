@@ -163,6 +163,10 @@ async def websocket_route_to_microservice(
     except Exception as e:
         print(f"Unexpected error: {e}")
     finally:
-        # Ensure websocket is closed only once
-        if not websocket.client_closed:
-            await websocket.close()
+        try:
+            # Check if the connection is still open using the client_state
+            if websocket.client_state.CONNECTED:
+                await websocket.close()
+        except RuntimeError:
+            # Handle case where connection is already closed
+            pass

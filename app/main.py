@@ -133,6 +133,7 @@ async def websocket_route_to_microservice(
         async with websockets.connect(
             service_url,
             extra_headers=extra_headers,
+            timeout=10,
         ) as microservice_ws:
 
             async def forward_to_service():
@@ -156,6 +157,9 @@ async def websocket_route_to_microservice(
 
     except websockets.exceptions.WebSocketException as e:
         print(f"WebSocket error: {e}")
+    except asyncio.TimeoutError:
+        print("Connection to microservice timed out.")
+        await websocket.close(code=1006)
     except Exception as e:
         print(f"Unexpected error: {e}")
     finally:
